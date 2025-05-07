@@ -23,7 +23,7 @@ def read_matrix(filename):
         print("Error: Matrix entries missing no the correct dimensions.")
         sys.exit(1)
 
-    M = []
+    Matrix = []
     index = 1
     for i in range(n):
         row = []
@@ -31,66 +31,66 @@ def read_matrix(filename):
             value = int(tokens[index])
             row.append(value)
             index += 1
-        M.append(row)
-    return M
+        Matrix.append(row)
+    return Matrix
 
 
-def is_reflexive(M):
-    n = len(M)
+def is_reflexive(Matrix):
+    n = len(Matrix)
     for i in range(n):
-        if M[i][i] != 1:
+        if Matrix[i][i] != 1:
             return False
     return True
 
 
-def is_irreflexive(M):
-    n = len(M)
+def is_irreflexive(Matrix):
+    n = len(Matrix)
     for i in range(n):
-        if M[i][i] != 0:
+        if Matrix[i][i] != 0:
             return False
     return True
 
 
-def is_symmetric(M):
-    n = len(M)
+def is_symmetric(Matrix):
+    n = len(Matrix)
     for i in range(n):
         for j in range(n):
-            if M[i][j] != M[j][i]:
+            if Matrix[i][j] != Matrix[j][i]:
                 return False
     return True
 
 
-def is_antisymmetric(M):
-    n = len(M)
+def is_antisymmetric(Matrix):
+    n = len(Matrix)
     for i in range(n):
         for j in range(n):
-            if i != j and M[i][j] == 1 and M[j][i] == 1:
+            if i != j and Matrix[i][j] == 1 and Matrix[j][i] == 1:
                 return False
     return True
 
 
-def is_asymmetric(M):
-    if not is_irreflexive(M):
+def is_asymmetric(Matrix):
+    if not is_irreflexive(Matrix):
         return False
-    if not is_antisymmetric(M):
+    if not is_antisymmetric(Matrix):
         return False
     return True
 
 
-def is_transitive(M):
-    n = len(M)
+def is_transitive(Matrix):
+    n = len(Matrix)
     for i in range(n):
         for j in range(n):
             for k in range(n):
-                if M[i][j] == 1 and M[j][k] == 1 and M[i][k] == 0:
+                if Matrix[i][j] == 1 and Matrix[j][k] == 1 and Matrix[i][k] == 0:
                     return False
     return True
 
 
-def print_matrix(M):
-    n = len(M)
+def print_matrix(Matrix):
+    n = len(Matrix)
     print(n)
-    for row in M:
+    for row in Matrix:
         line = ''
         for x in row:
             line += str(x) + ' '
@@ -102,76 +102,75 @@ def main():
         print(f"Usage: {sys.argv[0]} <input_file>")
         sys.exit(1)
 
-    M = read_matrix(sys.argv[1])
+    Matrix = read_matrix(sys.argv[1])
 
-    r = is_reflexive(M)
-    ir = is_irreflexive(M)
-    s = is_symmetric(M)
-    asym = is_antisymmetric(M)
-    a = is_asymmetric(M)
-    t = is_transitive(M)
+    reflexive = is_reflexive(Matrix)
+    irreflexive = is_irreflexive(Matrix)
+    symmetric = is_symmetric(Matrix)
+    antisymmetric = is_antisymmetric(Matrix)
+    asymmetric = is_asymmetric(Matrix)
+    transitive = is_transitive(Matrix)
 
-    print("Reflexive: " + ("Yes" if r else "No"))
-    print("Irreflexive: " + ("Yes" if ir else "No"))
-    print("Symmetric: " + ("Yes" if s else "No"))
-    print("Antisymmetric: " + ("Yes" if asym else "No"))
-    print("Asymmetric: " + ("Yes" if a else "No"))
-    print("Transitive: " + ("Yes" if t else "No"))
+    print("Reflexive: " + ("Yes" if reflexive else "No"))
+    print("Irreflexive: " + ("Yes" if irreflexive else "No"))
+    print("Symmetric: " + ("Yes" if symmetric else "No"))
+    print("Antisymmetric: " + ("Yes" if antisymmetric else "No"))
+    print("Asymmetric: " + ("Yes" if asymmetric else "No"))
+    print("Transitive: " + ("Yes" if transitive else "No"))
 
-    eq = r and s and t
-    print("Equivalence relation: " + ("Yes" if eq else "No"))
+    equivalence = reflexive and symmetric and transitive
+    print("Equivalence relation: " + ("Yes" if equivalence else "No"))
 
-    if not eq:
+    if not equivalence:
         # Reflexive closure
-        if not r:
-            R = []
-            for i in range(len(M)):
+        if not reflexive:
+            reflexive_matrix = []
+            for i in range(len(Matrix)):
                 row = []
-                for j in range(len(M)):
+                for j in range(len(Matrix)):
                     if i == j:
                         row.append(1)
                     else:
-                        row.append(M[i][j])
-                R.append(row)
+                        row.append(Matrix[i][j])
+                reflexive_matrix.append(row)
             print("\nReflexive closure:")
-            print_matrix(R)
+            print_matrix(reflexive_matrix)
         else:
-            R = M
+            reflexive_matrix = Matrix
 
         # Symmetric closure
-        if not s:
-            S = []
-            n = len(R)
+        if not symmetric:
+            symmetric_matrix = []
+            n = len(reflexive_matrix)
             for i in range(n):
                 row = []
                 for j in range(n):
-                    if R[j][i] == 1:
+                    if reflexive_matrix[j][i] == 1:
                         row.append(1)
                     else:
-                        row.append(R[i][j])
-                S.append(row)
+                        row.append(reflexive_matrix[i][j])
+                symmetric_matrix.append(row)
             print("\nSymmetric closure:")
-            print_matrix(S)
+            print_matrix(symmetric_matrix)
         else:
-            S = R
+            symmetric_matrix = reflexive_matrix
 
         # Transitive closure
-        if not t:
-            T = []
-            n = len(S)
-            # Copy S into T
+        if not transitive:
+            transitive_matrix = []
+            n = len(symmetric_matrix)
             for i in range(n):
                 row = []
                 for j in range(n):
-                    row.append(S[i][j])
-                T.append(row)
+                    row.append(symmetric_matrix[i][j])
+                transitive_matrix.append(row)
             for k in range(n):
                 for i in range(n):
                     for j in range(n):
-                        if T[i][k] == 1 and T[k][j] == 1:
-                            T[i][j] = 1
+                        if transitive_matrix[i][k] == 1 and transitive_matrix[k][j] == 1:
+                            transitive_matrix[i][j] = 1
             print("\nTransitive closure:")
-            print_matrix(T)
+            print_matrix(transitive_matrix)
 
 if __name__ == '__main__':
     main()
